@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pokemon List</string>
+    <string name="transition_pokemon_image">Pokemon image</string>
+    <string name="transition_pokemon_name">Pokemon name</string>
+    <string name="transition_pokemon_id">Pokemon id</string>
+    <string name="pokemon_id">Id: %s</string>
+    <string name="pokemon_height">Height: %s</string>
+    <string name="pokemon_weight">Weight: %s</string>
+    <string name="pokemon_base_experience">Base experience: %s</string>
+    <string name="pokemon_abilities">Abilities: %s</string>
+    <string name="wait_text">Please, wait for more info</string>
+    <string name="error_text">Cannot download info</string>
+</resources>
