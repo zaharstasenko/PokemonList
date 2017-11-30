@@ -16,7 +16,6 @@ import com.zakhariystasenko.pokemonlist.data_management.DataManager;
 import com.zakhariystasenko.pokemonlist.data_model.BasePokemonInfo;
 import com.zakhariystasenko.pokemonlist.pokemon_details_view.PokemonDetailsActivity;
 import com.zakhariystasenko.pokemonlist.root.PokemonApplication;
-import com.zakhariystasenko.pokemonlist.utils.SimpleObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +25,16 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
-public class PokemonListItemClick extends Activity implements PokemonListAdapter.ItemClickCallback {
+public class PokemonListActivity extends Activity implements PokemonListAdapter.ItemClickCallback {
     @Inject
     DataManager mDataManager;
 
     @BindView(R.id.message)
     TextView mMessage;
+
+    private Disposable mDisposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +46,12 @@ public class PokemonListItemClick extends Activity implements PokemonListAdapter
     }
 
     private SingleObserver<List<BasePokemonInfo>> pokemonObserver() {
-        return new SimpleObserver<List<BasePokemonInfo>>() {
+        return new SingleObserver<List<BasePokemonInfo>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                mDisposable = d;
+            }
+
             @Override
             public void onSuccess(List<BasePokemonInfo> basePokemonInfos) {
                 initPokemonList((ArrayList<BasePokemonInfo>) basePokemonInfos);
@@ -53,7 +60,6 @@ public class PokemonListItemClick extends Activity implements PokemonListAdapter
 
             @Override
             public void onError(Throwable e) {
-                super.onError(e);
                 mMessage.setText(R.string.error_text);
             }
         };
@@ -83,5 +89,11 @@ public class PokemonListItemClick extends Activity implements PokemonListAdapter
                         Pair.create(pokemonId, getString(R.string.transition_pokemon_id)));
 
         startActivity(intent, options.toBundle());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDisposable.dispose();
     }
 }

@@ -16,16 +16,18 @@ import com.zakhariystasenko.pokemonlist.data_management.DataManager;
 import com.zakhariystasenko.pokemonlist.data_model.BasePokemonInfo;
 import com.zakhariystasenko.pokemonlist.data_model.DetailedPokemonInfo;
 import com.zakhariystasenko.pokemonlist.root.PokemonApplication;
-import com.zakhariystasenko.pokemonlist.utils.SimpleObserver;
 import com.zakhariystasenko.pokemonlist.utils.PokemonApi;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
 public class PokemonDetailsActivity extends Activity {
     private static final String POKEMON_KEY = "BasePokemonInfo";
+    private Disposable mDisposable;
 
     @BindView(R.id.pokemonName)
     TextView mPokemonName;
@@ -84,8 +86,13 @@ public class PokemonDetailsActivity extends Activity {
         return bundle;
     }
 
-    private SimpleObserver<DetailedPokemonInfo> pokemonObserver() {
-        return new SimpleObserver<DetailedPokemonInfo>() {
+    private SingleObserver<DetailedPokemonInfo> pokemonObserver() {
+        return new SingleObserver<DetailedPokemonInfo>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                mDisposable = d;
+            }
+
             @Override
             public void onSuccess(DetailedPokemonInfo detailedPokemonInfo) {
                 mMessage.setVisibility(View.GONE);
@@ -94,7 +101,6 @@ public class PokemonDetailsActivity extends Activity {
 
             @Override
             public void onError(Throwable e) {
-                super.onError(e);
                 mMessage.setText(R.string.error_text);
             }
         };
@@ -105,5 +111,11 @@ public class PokemonDetailsActivity extends Activity {
         fragment.setArguments(PokemonDetailsFragment.getStartBundle(detailedPokemonInfo));
         getFragmentManager().beginTransaction().add(R.id.details,
                 fragment).commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDisposable.dispose();
     }
 }

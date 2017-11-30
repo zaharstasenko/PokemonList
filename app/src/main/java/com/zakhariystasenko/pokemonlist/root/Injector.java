@@ -6,7 +6,7 @@ import com.zakhariystasenko.pokemonlist.modules.DatabaseHelperModule;
 import com.zakhariystasenko.pokemonlist.modules.OkHttpClientModule;
 import com.zakhariystasenko.pokemonlist.modules.RetrofitModule;
 import com.zakhariystasenko.pokemonlist.pokemon_details_view.PokemonDetailsActivity;
-import com.zakhariystasenko.pokemonlist.pokemon_list_view.PokemonListItemClick;
+import com.zakhariystasenko.pokemonlist.pokemon_list_view.PokemonListActivity;
 
 import javax.inject.Singleton;
 import dagger.Component;
@@ -20,6 +20,6 @@ import dagger.Component;
         DataManagerModule.class
 })
 public interface Injector {
-    void inject(PokemonListItemClick activity);
+    void inject(PokemonListActivity activity);
     void inject(PokemonDetailsActivity activity);
 }
